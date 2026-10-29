@@ -1,3 +1,9 @@
+import sys
+import unittest
+
+if sys.platform != 'darwin':
+    raise unittest.SkipTest('共享收件箱队列与原生任务管家仅支持 macOS')
+
 import json
 from pathlib import Path
 import tempfile

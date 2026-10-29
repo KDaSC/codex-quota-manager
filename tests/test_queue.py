@@ -1,4 +1,10 @@
 """Persistent queue behavior; desktop transport is simulated, disk/locks are real."""
+import sys
+import unittest
+
+if sys.platform != 'darwin':
+    raise unittest.SkipTest('共享收件箱队列与原生任务管家仅支持 macOS')
+
 import copy
 import json
 from pathlib import Path
