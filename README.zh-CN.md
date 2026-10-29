@@ -15,6 +15,7 @@
 </p>
 
 <p align="center">
+  <a href="https://github.com/KDaSC/codex-quota-manager/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/KDaSC/codex-quota-manager/actions/workflows/ci.yml/badge.svg"></a>
   <img alt="Python 3.9+" src="https://img.shields.io/badge/Python-3.9%2B-3776AB?logo=python&logoColor=white">
   <img alt="macOS 与 Windows" src="https://img.shields.io/badge/platform-macOS%20%7C%20Windows-111111">
   <img alt="仅本机运行" src="https://img.shields.io/badge/runtime-local--only-12695c">
