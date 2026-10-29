@@ -1,0 +1,14 @@
+[
+  {
+    "path": ".vite/build/src-Dl21kCYQ.js",
+    "sha256": "a42052ee3309565865f2d20fc45dee297935cbb50d1fc1a404b90c18d824b93c"
+  },
+  {
+    "path": ".vite/build/main-0FVbxCQU.js",
+    "sha256": "fad45aa7d81de6fe166704e8879e3b7cbfc85151e72df7946853336c7cbc5a3c"
+  },
+  {
+    "path": "webview/assets/app-initial-feb30b196d11.js",
+    "sha256": "8f4e5fe65617413cabf689afbfc04bc6c24f73a5c0b57d7d0de443942343bd55"
+  }
+]

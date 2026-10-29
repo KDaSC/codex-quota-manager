@@ -1,0 +1,4 @@
+interface:
+  display_name: "Codex 多聊天续跑"
+  short_description: "手动选择多个聊天，共享额度、串行执行和想法收件箱"
+  default_prompt: "Use $codex-multi-resume to inspect and manage explicitly selected local Codex chats and the IdeaInbox queue."
