@@ -1,5 +1,7 @@
 > 本仓库基于 MIT 许可的 [progressrdx/codex-auto-resume](https://github.com/progressrdx/codex-auto-resume)，新增多聊天队列、可选的自动发现、原生任务管家与想法收件箱整合。中文说明是主要使用文档，安装前请先读 [整合版说明](docs/QUICKSTART.zh-CN.md)。
 
+> Mac 下载后无法打开？可在安装前使用[针对该应用的终端命令](docs/QUICKSTART.zh-CN.md#下载后首次打开终端方法)。应用未经过 Apple 公证，请确认下载来源。
+
 <p align="center">
   <img src="codex_resume/static/icon.svg" width="96" alt="Codex Quota Manager 图标">
 </p>
