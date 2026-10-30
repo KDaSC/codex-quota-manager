@@ -21,6 +21,9 @@ tests/evidence/*
 .ui-review/
 .local-archive/
 
+# Per-machine skill location, kept locally when installed.
+.agents/skills/codex-multi-resume/location.txt
+
 # Built app bundles ship as GitHub Release assets, not as tracked binaries.
 inbox/应用/
 *.dSYM/

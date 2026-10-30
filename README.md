@@ -38,7 +38,7 @@ By default it manages only the tasks you select yourself. An optional global swi
 It does **not** switch accounts, buy credits, redeem resets, approve tool calls, or create replacement conversations.
 
 > [!IMPORTANT]
-> This is an experimental, unofficial companion project and is not affiliated with or endorsed by OpenAI. The maintainer has observed two real macOS natural-reset recoveries and one Windows 11 end-to-end run. See [Current validation status](#current-validation-status) for the tested scope and remaining limitations.
+> This is an experimental, unofficial companion project and is not affiliated with or endorsed by OpenAI. The maintainer observed one unattended macOS five-hour reset recovery, another after manual service repair, and a Windows 11 run. See [Current validation status](#current-validation-status) for the tested scope and remaining limitations.
 
 > [!NOTE]
 > This repository is a derivative of [progressrdx/codex-auto-resume](https://github.com/progressrdx/codex-auto-resume) (MIT). It adds a multi-chat queue, opt-in auto-discovery of quota-interrupted chats, a native macOS task manager, and an IdeaInbox integration. Upstream code and this fork's changes are both MIT-licensed; see [LICENSE](LICENSE). The Chinese README is the primary user guide.
@@ -329,7 +329,7 @@ Validated locally:
 
 Validated with a real account on the currently supported macOS Codex desktop App version:
 
-- two successful end-to-end runs from actual usage exhaustion, across a natural reset boundary, to an automatically confirmed continuation in the original task.
+- two continuations in the original task after a real five-hour reset: one unattended, and one after manual service repair and reselection. The latter does not establish unattended end-to-end operation.
 
 Validated on a real Windows 11 machine with the Codex desktop App signed in to a ChatGPT Free account:
 
@@ -338,8 +338,7 @@ Validated on a real Windows 11 machine with the Codex desktop App signed in to a
 Current automated suite:
 
 ```text
-Python tests: 135 total (134 passed locally; 1 Windows-only launcher test skipped)
-Browser UI tests: 26 passed
+See GitHub Actions for the latest Python and browser UI test results
 Runtime dependencies: 0
 ```
 
@@ -434,7 +433,7 @@ Closing the terminal that launched a watcher does not stop that watcher. Closing
 
 ### Can it monitor every unfinished task?
 
-No. This is intentionally out of scope. Each task must be explicitly selected and checked.
+It does not manage every unfinished task. When enabled, the global switch finds local chats whose latest turn ended with a structured quota failure; when disabled, only individually enabled chats are managed.
 
 ### Does a completed turn prove the whole job is finished?
 

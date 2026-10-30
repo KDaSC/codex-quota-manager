@@ -22,14 +22,17 @@ SUPPORTED_MAC_APPS = {
     # see docs/macos-21828.md for the separate live-send validation boundary.
     ('26.1021.31345', '21828'),
     ('26.1023.50603', '22391'),
+    ('26.1027.30824', '22943'),
 }
-MAC_CLI_PAIRS = {('26.1023.50603', '22391'): '0.165.0-alpha.1.2'}
+MAC_CLI_PAIRS = {('26.1023.50603', '22391'): '0.165.0-alpha.1.2',
+                 ('26.1027.30824', '22943'): '0.166.0-alpha.5.1'}
 
 
 def mac_uses_queue(info):
     return (info.get('platform') == 'macos' and
             (info.get('version'), info.get('build')) in
-            {('26.1021.31345', '21828'), ('26.1023.50603', '22391')})
+            {('26.1021.31345', '21828'), ('26.1023.50603', '22391'),
+             ('26.1027.30824', '22943')})
 # Exact pairs, not the Cartesian product of independent App/CLI allowlists.
 # The new pair was checked against the official x64 MSIX; see docs/windows-compatibility.md.
 SUPPORTED_WINDOWS_PAIRS = {

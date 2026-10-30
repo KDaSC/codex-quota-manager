@@ -38,22 +38,59 @@ def discover_labels(agents):
             validate_label(name)
         except ValueError:
             continue
-        found.append(name)
+        if owns_service(path, name):
+            found.append(name)
     return found
+
+
+def select_existing_label(agents):
+    """Never guess which runner to modify if more than one exists."""
+    found = discover_labels(agents)
+    if len(found) > 1:
+        raise RuntimeError('发现多个续跑后台服务，请用 --label 明确选择')
+    return found[0] if found else None
+
+
+def owns_service(path, label):
+    """Identify our persisted runner before adopting or stopping a job."""
+    if path.is_symlink() or not path.is_file():
+        return False
+    try:
+        config = plistlib.loads(path.read_bytes())
+        args = config.get('ProgramArguments')
+        directory = config.get('WorkingDirectory')
+        if (not isinstance(config, dict) or config.get('Label') != label
+                or not isinstance(args, list) or len(args) < 8
+                or args[:4] != ['/usr/bin/python3', '-u', '-m', 'codex_resume']
+                or args[-4:-1] != ['queue', 'run', '--ready-token']
+                or not isinstance(directory, str)
+                or not directory.endswith('/Contents/Resources/backend')):
+            return False
+        uuid.UUID(args[-1])
+        return True
+    except (OSError, ValueError, TypeError, AttributeError, plistlib.InvalidFileException):
+        return False
 
 
 def uninstall(label, agents):
     """Stop and remove one service. Never touches queue state or dispatch records."""
     validate_label(label)
-    target = 'gui/' + str(os.getuid())
-    # A missing job makes bootout fail; that is not an error for uninstall.
-    subprocess.run(['/bin/launchctl', 'bootout', target + '/' + label],
-                   check=False, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
     path = agents / (label + '.plist')
-    if path.is_symlink():
-        raise RuntimeError('拒绝删除符号链接服务配置')
-    if path.exists():
-        path.unlink()
+    if not owns_service(path, label):
+        raise RuntimeError('不能确认这是本工具的后台服务，未停止或删除')
+    target = 'gui/' + str(os.getuid()) + '/' + label
+    def query():
+        return subprocess.run(['/bin/launchctl', 'print', target], check=False,
+                              stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL).returncode
+    status = query()
+    if status == 0:
+        stopped = subprocess.run(['/bin/launchctl', 'bootout', target], check=False,
+                                 stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        if stopped.returncode != 0 or query() != 113:
+            raise RuntimeError('后台停止未确认，保留配置，请检查后重试')
+    elif status != 113:
+        raise RuntimeError('无法确认后台是否运行，保留配置')
+    path.unlink()
     return path
 
 
@@ -72,11 +109,10 @@ def main():
     if args.uninstall:
         label = args.label
         if label is None:
-            existing = discover_labels(agents)
-            if not existing:
+            label = select_existing_label(agents)
+            if label is None:
                 print('未发现本工具登记的后台服务，无需卸载')
                 return 0
-            label = existing[0]
         path = uninstall(label, agents)
         print('已停止并移除后台服务：%s' % label)
         print('队列状态、人工暂停和发送记录均未修改。')
@@ -86,9 +122,8 @@ def main():
 
     label = args.label
     if label is None:
-        existing = discover_labels(agents)
         # Adopt an existing label so re-running the installer upgrades in place.
-        label = existing[0] if existing else DEFAULT_LABEL
+        label = select_existing_label(agents) or DEFAULT_LABEL
     validate_label(label)
 
     backend = args.bundle.resolve(strict=True)/'Contents/Resources/backend'

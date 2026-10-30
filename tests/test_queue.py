@@ -240,6 +240,21 @@ class RestartSafetyTests(unittest.TestCase):
         self.store.set_paused(True);self.scheduler.tick();self.assertEqual(self.sent,[])
 
 class CurrentMacProtocolTests(unittest.TestCase):
+    def test_22943_accepts_only_tested_cli_and_uses_official_queue(self):
+        import plistlib
+        from unittest.mock import patch
+        from subprocess import CompletedProcess
+        from codex_resume.app import check_version, mac_uses_queue, AppError
+        with tempfile.TemporaryDirectory() as root:
+            p=Path(root)/'Contents';p.mkdir()
+            (p/'Info.plist').write_bytes(plistlib.dumps({'CFBundleIdentifier':'com.openai.codex',
+                'CFBundleShortVersionString':'26.1027.30824','CFBundleVersion':'22943'}))
+            with patch('codex_resume.app.subprocess.run',return_value=CompletedProcess([],0,'codex-cli 0.166.0-alpha.5.1\n','')):
+                info=check_version(root,'macos')
+                self.assertTrue(mac_uses_queue(info))
+            with patch('codex_resume.app.subprocess.run',return_value=CompletedProcess([],0,'codex-cli 0.0.0\n','')):
+                with self.assertRaises(AppError):check_version(root,'macos')
+
     def test_verified_22391_uses_official_queue_and_exact_cli_pair(self):
         import plistlib
         from unittest.mock import patch
