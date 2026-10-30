@@ -21,6 +21,9 @@ def load():
 class BackgroundLabelTests(unittest.TestCase):
     def setUp(self):
         self.module = load()
+        uid = patch.object(self.module.os, 'getuid', return_value=501, create=True)
+        uid.start()
+        self.addCleanup(uid.stop)
 
     def test_accepts_neutral_and_legacy_labels(self):
         for label in ('local.codex-resume.runner',
